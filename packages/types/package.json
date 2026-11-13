@@ -1,0 +1,9 @@
+{
+  "name": "@bashgino/types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DRF response contracts consumed by the Bashgino clients.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@bashgino/domain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-free Bashgino business rules shared by the web and Android clients.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "sideEffects": false
+}

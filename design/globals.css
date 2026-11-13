@@ -1,0 +1,867 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════
+   Bashgino Design System — Dark Red & Charcoal
+   Source of truth: docs/gym-plan-design-preferences-v2.md
+   All components must consume these semantic tokens; no component
+   should hardcode a brand or surface colour.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces and text */
+  --color-bg: #F9FAFB;
+  --color-bg-rgb: 249 250 251;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-subtle: #F3F4F6;
+  --color-text: #111827;
+  --color-text-secondary: #475569;
+  /* Darkened from the spec's #64748B so muted text clears WCAG AA on subtle surfaces (4.98:1) */
+  --color-text-muted: #5E6A7D;
+  --color-border: #E5E7EB;
+  --color-border-strong: #CBD5E1;
+
+  /* Brand — primary action surface */
+  --color-primary: #B91C1C;
+  --color-primary-rgb: 185 28 28;
+  --color-primary-hover: #991B1B;
+  --color-primary-pressed: #7F1D1D;
+  --color-on-primary: #FFFFFF;
+  --color-primary-subtle: #FEF2F2;
+  /* Brand ink: readable brand text/icons on neutral surfaces */
+  --color-primary-ink: #B91C1C;
+  --color-primary-ink-rgb: 185 28 28;
+  /* Selection border (cards, nav pills) — brighter in dark */
+  --color-selected-border: #B91C1C;
+  --color-selected-rgb: 185 28 28;
+  --color-focus: #B91C1C;
+  --color-focus-rgb: 185 28 28;
+
+  /* Semantic states */
+  --color-success: #15803D;
+  --color-success-subtle: #F0FDF4;
+  --color-success-border: #BBF7D0;
+  --color-warning: #B45309;
+  --color-warning-subtle: #FFFBEB;
+  --color-warning-border: #FDE68A;
+  --color-error: #B91C1C;
+  --color-error-subtle: #FEF2F2;
+  --color-error-border: #FECACA;
+  --color-info: #1D4ED8;
+  --color-info-subtle: #EFF6FF;
+  --color-info-border: #BFDBFE;
+  /* Filled destructive actions keep white-on-red contrast in both themes */
+  --color-error-strong: #B91C1C;
+  --color-error-strong-hover: #991B1B;
+
+  /* Overlays */
+  --color-overlay: rgba(17, 24, 39, 0.48);
+  /* Intentionally dark surfaces (photo scrims, tooltips) in both themes */
+  --color-inverse-surface: #111827;
+  --color-inverse-surface-rgb: 17 24 39;
+  --color-inverse-raised: #1F2937;
+  --color-inverse-text: #F9FAFB;
+  --color-inverse-muted: #CBD5E1;
+
+  /* Data visualisation — brand-led but semantically neutral */
+  --color-chart-1: #B91C1C;
+  --color-chart-2: #1D4ED8;
+  --color-chart-3: #15803D;
+  --color-chart-4: #B45309;
+  --color-chart-5: #64748B;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --font-fa: "Vazirmatn", Tahoma, sans-serif;
+  --font-en: "Inter", Arial, sans-serif;
+
+  /* Motion tokens — curves are strong ease-out / ease-in-out, not the weak CSS defaults */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 120ms;
+  --dur-control: 180ms;
+  --dur-step: 220ms;
+  --dur-surface: 200ms;
+}
+
+/* Dark mode is a designed counterpart, not an inversion. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #0B0F14;
+  --color-bg-rgb: 11 15 20;
+  --color-surface: #111827;
+  --color-surface-raised: #1F2937;
+  --color-surface-subtle: #18212F;
+  --color-text: #F9FAFB;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #9CA3AF;
+  --color-border: #374151;
+  --color-border-strong: #4B5563;
+
+  --color-primary: #B91C1C;
+  --color-primary-rgb: 185 28 28;
+  --color-primary-hover: #991B1B;
+  --color-primary-pressed: #7F1D1D;
+  --color-on-primary: #FFFFFF;
+  --color-primary-subtle: #351719;
+  --color-primary-ink: #F87171;
+  --color-primary-ink-rgb: 248 113 113;
+  --color-selected-border: #EF4444;
+  --color-selected-rgb: 239 68 68;
+  --color-focus: #F87171;
+  --color-focus-rgb: 248 113 113;
+
+  --color-success: #4ADE80;
+  --color-success-subtle: #12251A;
+  --color-success-border: #1E4D33;
+  --color-warning: #FBBF24;
+  --color-warning-subtle: #2A1F0B;
+  --color-warning-border: #6B4A12;
+  --color-error: #F87171;
+  --color-error-subtle: #2A1114;
+  --color-error-border: #7F1D1D;
+  --color-info: #60A5FA;
+  --color-info-subtle: #101B33;
+  --color-info-border: #1E3A8A;
+  --color-error-strong: #B91C1C;
+  --color-error-strong-hover: #991B1B;
+
+  --color-overlay: rgba(0, 0, 0, 0.66);
+
+  --color-chart-1: #EF4444;
+  --color-chart-2: #60A5FA;
+  --color-chart-3: #4ADE80;
+  --color-chart-4: #FBBF24;
+  --color-chart-5: #9CA3AF;
+}
+
+html[lang="fa"] {
+  direction: rtl;
+  font-family: var(--font-fa);
+  overflow-x: hidden;
+}
+
+html[lang="en"] {
+  direction: ltr;
+  font-family: var(--font-en);
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: inherit;
+  /* No `overflow-x` here: an overflow value other than visible makes <body> its
+     own scroll container, so the document scrolls while body's scrollport stays
+     at 0 and every `position: sticky` child (top bar, sidebar) silently stops
+     sticking. `html` carries the horizontal clip, which propagates to the
+     viewport instead. */
+}
+
+input,
+button,
+textarea,
+select,
+optgroup {
+  font-family: inherit;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+  color: var(--color-text);
+}
+
+@layer components {
+  /* Card primitive — neutral surface, subtle border, restrained rounding */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out),
+      background-color 180ms var(--ease-out);
+  }
+
+  @media (max-width: 767px) {
+    .card {
+      padding: var(--space-4);
+    }
+  }
+
+  /* Button primitives */
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out),
+      transform 100ms var(--ease-out);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    background-color: var(--color-primary-pressed);
+    transform: scale(0.98);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-surface-subtle);
+    border-color: var(--color-text-muted);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-tertiary {
+    background-color: transparent;
+    color: var(--color-primary-ink);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-3);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease-out);
+  }
+
+  .btn-tertiary:hover:not(:disabled) {
+    background-color: var(--color-primary-subtle);
+  }
+
+  /* Primary action that reads as an outline — the empty-state CTA. */
+  .btn-outline-primary {
+    background-color: transparent;
+    color: var(--color-primary-ink);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+  }
+
+  .btn-outline-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-subtle);
+  }
+
+  .btn-outline-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-danger {
+    background-color: var(--color-error-strong);
+    color: #FFFFFF;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease-out);
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background-color: var(--color-error-strong-hover);
+  }
+
+  .btn-danger:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* Compact metadata pill inside a plan card (icon + short label). */
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-secondary);
+    font-size: 10px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  /* Form input fields */
+  .input-field {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    padding-inline: var(--space-3);
+    font-size: 14px;
+    width: 100%;
+    transition: border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
+  }
+
+  .input-field::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .input-field:hover:not(:disabled) {
+    border-color: var(--color-text-muted);
+  }
+
+  /* Higher specificity than :hover so the focus border always wins */
+  .input-field:focus:not(:disabled) {
+    outline: none;
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 30%, transparent);
+  }
+
+  .input-field:disabled {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* Badge primitive */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+}
+
+.badge-primary {
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary-ink);
+  border-color: color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.badge-success {
+  background-color: var(--color-success-subtle);
+  color: var(--color-success);
+  border-color: var(--color-success-border);
+}
+
+.badge-warning {
+  background-color: var(--color-warning-subtle);
+  color: var(--color-warning);
+  border-color: var(--color-warning-border);
+}
+
+.badge-error {
+  background-color: var(--color-error-subtle);
+  color: var(--color-error);
+  border-color: var(--color-error-border);
+}
+
+.badge-info {
+  background-color: var(--color-info-subtle);
+  color: var(--color-info);
+  border-color: var(--color-info-border);
+}
+
+.badge-neutral {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+/* Accessibility focus visible — wins over per-component `outline-none` */
+:focus-visible {
+  outline: 3px solid var(--color-focus) !important;
+  outline-offset: 2px;
+}
+
+/* Device mockups and empty preview slots */
+.preview-empty-slot {
+  background-color: var(--color-bg);
+  background-image: radial-gradient(var(--color-border) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Motion primitives
+   transform/opacity only (compositor-friendly). Every primitive
+   ships its own prefers-reduced-motion variant — no follow-up pass.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Press feedback fires on pointer-down, not on release */
+.press {
+  transition: transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-control) ease, border-color var(--dur-control) ease,
+    box-shadow var(--dur-control) ease, opacity var(--dur-control) ease;
+}
+
+.press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Wizard step entry: direction-aware, short distance, no scale on a full-width surface */
+@keyframes motion-step-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--step-from-x, 0), 0, 0);
+  }
+}
+
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.motion-step-fwd {
+  --step-from-x: 12px;
+  animation: motion-step-in var(--dur-step) var(--ease-out) both;
+}
+
+.motion-step-back {
+  --step-from-x: -12px;
+  animation: motion-step-in var(--dur-step) var(--ease-out) both;
+}
+
+/* Forward means "next page", which sits on the opposite side in RTL */
+html[dir="rtl"] .motion-step-fwd {
+  --step-from-x: -12px;
+}
+
+html[dir="rtl"] .motion-step-back {
+  --step-from-x: 12px;
+}
+
+/* Segmented progress: the fill grows from the reading edge */
+.progress-fill {
+  transform-origin: left center;
+  transition: transform 260ms var(--ease-out);
+}
+
+html[dir="rtl"] .progress-fill {
+  transform-origin: right center;
+}
+
+/* Selection confirmation on the control that was just pressed */
+@keyframes motion-check-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+}
+
+.motion-check {
+  animation: motion-check-pop 160ms var(--ease-out) both;
+}
+
+/* Modal: scrim fades in, panel materialises (opacity + lift + scale together) */
+@keyframes motion-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.97);
+  }
+}
+
+.motion-scrim {
+  animation: motion-fade-in var(--dur-control) var(--ease-out) both;
+}
+
+.motion-panel {
+  animation: motion-panel-in var(--dur-surface) var(--ease-out) both;
+}
+
+/* ── Guided-session studio stage ─────────────────────────────────
+   The dataset illustrates on a near-white studio backdrop. The stage is a
+   lit studio in BOTH themes — the artwork keeps its own light environment
+   instead of appearing as a white card pasted on a dark page. Dark mode
+   dims the artwork slightly and rings the stage so it reads as a screen. */
+.stage {
+  background:
+    radial-gradient(120% 78% at 50% 2%, #ffffff 0%, rgba(255, 255, 255, 0) 58%),
+    linear-gradient(180deg, #f7f9fb 0%, #edf1f5 62%, #e1e7ee 100%);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="dark"] .stage {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 -40px 60px -40px rgba(11, 15, 20, 0.85);
+}
+
+[data-theme="dark"] .stage-frame {
+  filter: brightness(0.66) saturate(1.02);
+}
+
+/* Vignette: in dark mode the studio fades into the page instead of glowing */
+[data-theme="dark"] .stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 92% at 50% 42%, rgba(11, 15, 20, 0) 26%, rgba(11, 15, 20, 0.72) 100%);
+}
+
+[data-theme="dark"] .stage-help {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(17, 24, 39, 0.72);
+  color: #f9fafb;
+}
+
+[data-theme="dark"] .stage-pill {
+  background: rgba(17, 24, 39, 0.6);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .stage-pill.is-active {
+  background: rgba(249, 250, 251, 0.92);
+  color: #0b0f14;
+}
+
+/* Two positions of the same movement: dissolve + a small travel so the
+   change reads as the body moving, not as a second photo appearing. */
+.stage-frame {
+  transition:
+    opacity 620ms var(--ease-in-out),
+    transform 1150ms var(--ease-out);
+  will-change: opacity, transform;
+}
+
+/* Bottom sheet (guide / exercise list): rises from the edge it belongs to */
+@keyframes motion-sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+.motion-sheet {
+  animation: motion-sheet-in 320ms var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1)) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-frame {
+    transition: opacity 120ms linear;
+    transform: none !important;
+  }
+
+  .motion-sheet {
+    animation: motion-fade-in 160ms var(--ease-out) both;
+  }
+}
+
+
+@keyframes motion-stage-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+.motion-stage {
+  animation: motion-stage-in var(--dur-step) var(--ease-out) both;
+}
+
+/* Two frames of the same movement: opacity only, slow enough to read as motion */
+.motion-frame {
+  transition: opacity 520ms var(--ease-in-out);
+  will-change: opacity;
+}
+
+@keyframes motion-pulse-soft {
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.motion-pulse-soft {
+  animation: motion-pulse-soft 900ms var(--ease-in-out) infinite;
+}
+
+/* A countdown is constant-rate progress: linear, never eased */
+.motion-ring {
+  transition: stroke-dashoffset 1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-stage,
+  .motion-pulse-soft {
+    animation: none;
+  }
+
+  .motion-frame {
+    transition-duration: 120ms;
+  }
+
+  .motion-ring {
+    transition: none;
+  }
+}
+
+/* Toast entry — leaves the way it arrived */
+@keyframes motion-snackbar-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.98);
+  }
+}
+
+.motion-snackbar {
+  animation: motion-snackbar-in 180ms var(--ease-out) both;
+}
+
+/* Inline disclosure (e.g. the register optional-details block): it is revealed
+   in place, so it fades and lifts a few pixels — never a height animation. */
+@keyframes motion-reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+.motion-reveal {
+  animation: motion-reveal-in var(--dur-control) var(--ease-out) both;
+}
+
+/* ── Page hero ────────────────────────────────────────────────────
+   The artwork is part of the page, not a card: no border, no surface, no
+   corners. It sits at the reading END (left in Persian, right in English) with
+   a radial mask so it dissolves into the page on every side, and a veil that
+   fades the band into `--color-bg` under the copy and along the bottom edge.
+   Copy therefore sits on the page background and uses normal text tokens. */
+.page-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Two nesting levels, one mask each: nested masks multiply, so the artwork
+   feathers horizontally toward the copy AND vertically at both ends without
+   needing mask-composite (patchy across browsers). */
+.page-hero-art {
+  position: absolute;
+  inset-block: -14px;
+  inset-inline-end: -10px;
+  width: 68%;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 34%);
+  mask-image: linear-gradient(to left, transparent 0%, #000 34%);
+}
+
+html[dir="ltr"] .page-hero-art {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 34%);
+}
+
+.page-hero-art-inner {
+  position: absolute;
+  inset: 0;
+  background-image: var(--hero-light);
+  background-size: cover;
+  background-position: 50% 46%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+}
+
+[data-theme="dark"] .page-hero-art-inner {
+  background-image: var(--hero-dark);
+}
+
+.page-hero-veil {
+  position: absolute;
+  inset: -14px -10px -6px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to top, rgb(var(--color-bg-rgb)) 0%, rgb(var(--color-bg-rgb) / 0) 55%),
+    linear-gradient(to left, rgb(var(--color-bg-rgb) / 0.97) 0%, rgb(var(--color-bg-rgb) / 0) 62%);
+}
+
+html[dir="ltr"] .page-hero-veil {
+  background-image:
+    linear-gradient(to top, rgb(var(--color-bg-rgb)) 0%, rgb(var(--color-bg-rgb) / 0) 55%),
+    linear-gradient(to right, rgb(var(--color-bg-rgb) / 0.97) 0%, rgb(var(--color-bg-rgb) / 0) 62%);
+}
+
+/* Wider viewports keep the art from stretching: narrower strip, taller band. */
+@media (min-width: 640px) {
+  .page-hero-art {
+    width: 50%;
+    inset-inline-end: -14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Fewer and gentler: keep the cross-fades that carry meaning, drop the movement */
+  .motion-step-fwd,
+  .motion-step-back {
+    animation: motion-fade-in 160ms ease both;
+  }
+
+  .motion-check {
+    animation: motion-fade-in 120ms ease both;
+  }
+
+  .motion-panel {
+    animation: motion-fade-in var(--dur-control) ease both;
+  }
+
+  .motion-snackbar {
+    animation: motion-fade-in 140ms ease both;
+  }
+
+  .motion-scrim {
+    animation: motion-fade-in 120ms ease both;
+  }
+
+  .motion-reveal {
+    animation: motion-fade-in 120ms ease both;
+  }
+
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+
+  .progress-fill {
+    transition: none;
+  }
+
+  .animate-pulse {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .motion-scrim {
+    background-color: var(--color-overlay);
+    backdrop-filter: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Exercise-detail anatomy heatmap
+   Figures are the dataset explorer's own SVGs (mock parity).
+   Muscle regions are tagged `data-muscle="<heatmap_id>"`; the sheet
+   adds .active-primary / .active-secondary after render. Colours come
+   from the chart tokens so the diagram follows the theme.
+   ═══════════════════════════════════════════════════════════════ */
+.anatomy-heatmap .anatomy-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.anatomy-heatmap .body-base {
+  fill: var(--color-inverse-raised);
+  stroke: var(--color-inverse-surface);
+}
+
+.anatomy-heatmap .muscle-region {
+  fill: color-mix(in srgb, var(--color-inverse-muted) 16%, var(--color-inverse-surface));
+  stroke: var(--color-inverse-surface);
+  stroke-width: 1.2;
+  transition: fill 180ms var(--ease-out), stroke 180ms var(--ease-out);
+}
+
+.anatomy-heatmap .muscle-region.active-primary {
+  fill: var(--color-chart-1);
+  stroke: color-mix(in srgb, var(--color-chart-1) 45%, white);
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-chart-1) 70%, transparent));
+}
+
+.anatomy-heatmap .muscle-region.active-secondary {
+  fill: var(--color-chart-2);
+  stroke: color-mix(in srgb, var(--color-chart-2) 45%, white);
+  stroke-width: 1.3;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-chart-2) 60%, transparent));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anatomy-heatmap .muscle-region {
+    transition: none;
+  }
+}

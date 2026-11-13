@@ -1,0 +1,87 @@
+name: CI
+
+# Runs on every change that could reach a release:
+#   * push to develop      — integration branch, never builds an app
+#   * pull request to main — the gate before a tag
+#   * workflow_call        — reusable from the release workflow
+#
+# Nothing here signs, publishes or uploads anything. A distributable APK/AAB is
+# produced only by android-release.yml on a version tag.
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── typecheck, lint, design tokens, unit tests ────────────────────────────
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # Fails when src/theme/tokens.generated.ts drifts from design/globals.css.
+      - name: Design tokens are in sync
+        run: npm run tokens:check
+
+      - name: Tests
+        run: npm test -- --ci --silent
+
+  # ── the native project must still generate ────────────────────────────────
+  # `app.json` and its config plugins are the only source of native config
+  # (android/ and ios/ are generated, never committed). A broken plugin breaks
+  # every future release, so it fails here instead of on a tag.
+  prebuild:
+    name: prebuild (android)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - run: npm ci
+
+      - name: Generate the native project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Assert the project was generated
+        run: |
+          set -euo pipefail
+          test -f android/app/build.gradle || { echo "::error::android/app/build.gradle missing"; exit 1; }
+          grep -q 'applicationId '"'"'com.bashgino.app'"'"'' android/app/build.gradle \
+            || { echo "::error::applicationId drifted from com.bashgino.app"; exit 1; }
+          echo "native project generated with the expected applicationId"

@@ -1,0 +1,26 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@bashgino/domain": ["./packages/domain/src/index.ts"],
+      "@bashgino/domain/*": ["./packages/domain/src/*"],
+      "@bashgino/types": ["./packages/types/src/index.ts"],
+      "@bashgino/types/*": ["./packages/types/src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "packages/domain/src/**/*.ts",
+    "packages/types/src/**/*.ts"
+  ],
+  "exclude": ["node_modules", "android", "ios"]
+}

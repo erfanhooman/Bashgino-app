@@ -1,0 +1,37 @@
+# Dependency and action updates — monthly, grouped.
+#
+# This app ships to phones on a human-reviewed tag, so a steady drip of major
+# bumps is noise. Expo SDK upgrades are deliberately a manual, tested task
+# (`npx expo install --fix`), not an automated PR.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "deps"
+    # The Expo SDK pins its own compatible versions of these; bumping them on
+    # their own produces a broken native build.
+    ignore:
+      - dependency-name: "expo*"
+      - dependency-name: "react-native*"
+      - dependency-name: "@react-native*"
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+    groups:
+      # Everything else, one PR per month.
+      npm-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
