@@ -30,6 +30,16 @@ updates:
       - dependency-name: "@react-native*"
       - dependency-name: "react"
       - dependency-name: "react-dom"
+      # Toolchain majors break the type/lint plugins that drive `npm run verify`,
+      # not the app: TypeScript 7 crashes typescript-eslint ("reading 'Intrinsic'")
+      # and ESLint 10 removed the context API that eslint-plugin-react still uses.
+      # Both are deliberate, tested upgrades, never a drive-by PR.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@typescript-eslint/*"
+        update-types: ["version-update:semver-major"]
     groups:
       # Everything else, one PR per month.
       npm-minor-patch:
