@@ -29,6 +29,7 @@
       "expo-secure-store",
       "expo-sqlite",
       "expo-font",
+      "./plugins/withReleaseSigning",
       [
         "expo-splash-screen",
         {

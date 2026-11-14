@@ -182,13 +182,38 @@ jobs:
       - name: Verify the APK is signed with the upload key (not the debug key)
         env:
           VERSION: ${{ steps.version.outputs.semver }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
           set -euo pipefail
           apk="android/app/build/outputs/apk/release/app-release.apk"
+          aab="android/app/build/outputs/bundle/release/app-release.aab"
           [[ -f "$apk" ]] || { echo "::error::$apk missing"; exit 1; }
+          [[ -f "$aab" ]] || { echo "::error::$aab missing"; exit 1; }
 
-          apksigner="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)"
-          certs="$("$apksigner" verify --print-certs "$apk")"
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/android-sdk}}"
+          echo "sdk=$SDK"
+
+          find_apksigner() {
+            find "$SDK/build-tools" -maxdepth 2 -name apksigner -type f 2>/dev/null | sort -V | tail -1
+          }
+          apksigner="$(find_apksigner)"
+          if [[ -z "$apksigner" ]]; then
+            # build-tools is installed by AGP on demand; make it explicit so this
+            # step never depends on whatever gradle happened to download.
+            sdkmanager="$(find "$SDK/cmdline-tools" -maxdepth 3 -name sdkmanager -type f 2>/dev/null | sort -V | tail -1)"
+            [[ -n "$sdkmanager" ]] || { echo "::error::sdkmanager not found under $SDK"; exit 1; }
+            echo "installing build-tools;36.0.0"
+            "$sdkmanager" --install "build-tools;36.0.0" >/dev/null
+            apksigner="$(find_apksigner)"
+          fi
+          [[ -n "$apksigner" ]] || { echo "::error::apksigner still missing"; ls -la "$SDK" || true; exit 1; }
+          echo "apksigner=$apksigner"
+
+          if ! certs="$("$apksigner" verify --print-certs "$apk" 2>&1)"; then
+            echo "::error::apksigner says the APK does not verify"
+            echo "$certs"
+            exit 1
+          fi
           echo "$certs"
 
           if grep -qi "Android Debug" <<< "$certs"; then
@@ -196,9 +221,28 @@ jobs:
             exit 1
           fi
 
+          # The signer certificate must be the upload key we staged, not just
+          # "some non-debug key": compare the SHA-256 digests.
+          apk_sha="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$certs" | head -1 | tr -d ' :' | tr 'A-F' 'a-f')"
+          keystore="$HOME/.gradle/gradle.properties"
+          ks_file="$(sed -n 's/^BASHGINO_UPLOAD_STORE_FILE=//p' "$keystore")"
+          ks_pass="$(sed -n 's/^BASHGINO_UPLOAD_STORE_PASSWORD=//p' "$keystore")"
+          ks_sha="$(keytool -list -v -keystore "$ks_file" -alias "$KEY_ALIAS" -storepass "$ks_pass" 2>/dev/null \
+            | sed -n 's/^[[:space:]]*SHA256: //p' | head -1 | tr -d ' :' | tr 'A-F' 'a-f')"
+          echo "apk_cert_sha256=$apk_sha"
+          echo "keystore_sha256=$ks_sha"
+          if [[ -z "$apk_sha" || -z "$ks_sha" ]]; then
+            echo "::error::could not read both certificate digests"
+            exit 1
+          fi
+          if [[ "$apk_sha" != "$ks_sha" ]]; then
+            echo "::error::the APK is not signed with the configured upload key"
+            exit 1
+          fi
+
           mkdir -p out
           cp "$apk" "out/bashgino-${VERSION}.apk"
-          cp android/app/build/outputs/bundle/release/app-release.aab "out/bashgino-${VERSION}.aab"
+          cp "$aab" "out/bashgino-${VERSION}.aab"
           ls -lh out
 
       - name: Upload build artefacts

@@ -85,3 +85,7 @@ jobs:
           grep -q 'applicationId '"'"'com.bashgino.app'"'"'' android/app/build.gradle \
             || { echo "::error::applicationId drifted from com.bashgino.app"; exit 1; }
           echo "native project generated with the expected applicationId"
+          # The release signing config is injected by plugins/withReleaseSigning.js.
+          # If it stops applying, every tagged release would silently be debug-signed.
+          grep -q 'BASHGINO_UPLOAD_STORE_FILE' android/app/build.gradle \
+            || { echo "::error::release signing config was not injected into build.gradle"; exit 1; }
