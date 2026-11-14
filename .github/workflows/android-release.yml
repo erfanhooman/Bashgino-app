@@ -47,19 +47,19 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       # ── version from the tag ──────────────────────────────────────────────
       - name: Resolve version
@@ -197,7 +197,7 @@ jobs:
           ls -lh out
 
       - name: Upload build artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bashgino-android-${{ steps.version.outputs.semver }}
           path: out/*
@@ -205,7 +205,7 @@ jobs:
 
       # ── publish to the GitHub Release ─────────────────────────────────────
       - name: Attach artefacts to the GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.version.outputs.name }}
           name: Bashgino ${{ steps.version.outputs.semver }}
