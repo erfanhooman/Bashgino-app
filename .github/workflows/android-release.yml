@@ -60,6 +60,11 @@ jobs:
           java-version: "17"
 
       - uses: android-actions/setup-android@v3
+        with:
+          # Do not install the obsolete `tools` package — sdkmanager 16+ no longer
+          # ships it and the action's default list fails the whole release.
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: true
 
       # ── version from the tag ──────────────────────────────────────────────
       - name: Resolve version
