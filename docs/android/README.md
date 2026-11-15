@@ -202,13 +202,16 @@ npm run build:apk                     # debug APK → android/app/build/outputs/
 npm run build:aab                     # release AAB (needs a signing config, see below)
 ```
 
-Release signing is intentionally not committed. `android/app/build.gradle` reads
-`BASHGINO_UPLOAD_STORE_FILE` / `_STORE_PASSWORD` / `_KEY_ALIAS` / `_KEY_PASSWORD`
-from Gradle properties (put them in `~/.gradle/gradle.properties`). Locally it
+Release signing is intentionally not committed. `plugins/withReleaseSigning.js`
+injects a `release` signingConfig into the generated `android/app/build.gradle`
+during prebuild, reading `BASHGINO_UPLOAD_STORE_FILE` / `_STORE_PASSWORD` /
+`_KEY_ALIAS` / `_KEY_PASSWORD` from Gradle properties (put them in
+`~/.gradle/gradle.properties`). With no keystore configured the release build type
 falls back to the debug key so `assembleRelease` still produces an installable
 APK — **the CI release workflow refuses that fallback** and fails if the keystore
-secrets are missing, because a debug-signed APK can never be published or updated.
-Never commit a keystore.
+secrets are missing or if the APK certificate does not match the upload key,
+because a debug-signed build can never be published or updated. Never commit a
+keystore.
 
 ### Releases come from tags, not from a workstation
 

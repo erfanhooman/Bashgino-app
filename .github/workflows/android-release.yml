@@ -223,7 +223,9 @@ jobs:
 
           # The signer certificate must be the upload key we staged, not just
           # "some non-debug key": compare the SHA-256 digests.
-          apk_sha="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$certs" | head -1 | tr -d ' :' | tr 'A-F' 'a-f')"
+          # apksigner prints "Signer #1 certificate SHA-256 digest:" for v1/v3
+          # signers and "V2 Signer: certificate SHA-256 digest:" for v2 — match both.
+          apk_sha="$(sed -n 's/.*certificate SHA-256 digest:[[:space:]]*//p' <<< "$certs" | head -1 | tr -d ' :' | tr 'A-F' 'a-f')"
           keystore="$HOME/.gradle/gradle.properties"
           ks_file="$(sed -n 's/^BASHGINO_UPLOAD_STORE_FILE=//p' "$keystore")"
           ks_pass="$(sed -n 's/^BASHGINO_UPLOAD_STORE_PASSWORD=//p' "$keystore")"
